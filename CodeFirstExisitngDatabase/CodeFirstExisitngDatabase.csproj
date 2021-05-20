@@ -53,10 +53,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Author.cs" />
+    <Compile Include="Category.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="Migrations\202105200724338_InitialModel.cs" />
     <Compile Include="Migrations\202105200724338_InitialModel.Designer.cs">
       <DependentUpon>202105200724338_InitialModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105200751140_AddCategoriesTable.cs" />
+    <Compile Include="Migrations\202105200751140_AddCategoriesTable.Designer.cs">
+      <DependentUpon>202105200751140_AddCategoriesTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105200754394_AddCategoryColumnToCoursesTable.cs" />
+    <Compile Include="Migrations\202105200754394_AddCategoryColumnToCoursesTable.Designer.cs">
+      <DependentUpon>202105200754394_AddCategoryColumnToCoursesTable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="PlutoContext.cs" />
@@ -71,6 +80,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202105200724338_InitialModel.resx">
       <DependentUpon>202105200724338_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105200751140_AddCategoriesTable.resx">
+      <DependentUpon>202105200751140_AddCategoriesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105200754394_AddCategoryColumnToCoursesTable.resx">
+      <DependentUpon>202105200754394_AddCategoryColumnToCoursesTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
