@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace CodeFirstExisitngDatabase.Migrations
 {
     using System;
@@ -18,6 +20,20 @@ namespace CodeFirstExisitngDatabase.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
+
+            context.Authors.AddOrUpdate(a => a.Name, 
+                new Author
+                {
+                    Name = "Author 1",
+                    Courses = new Collection<Course>()
+                    {
+                        new Course()
+                        {   
+                            Name = "Course for Author 1",
+                            Description = "Description"
+                        }
+                    }
+                });
         }
     }
 }
