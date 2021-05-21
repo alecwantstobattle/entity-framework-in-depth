@@ -19,6 +19,7 @@ namespace CodeFirstExisitngDatabase
 
         public string Name { get; set; }
 
+        //[Required]
         public string Description { get; set; }
 
         // public DateTime? DatePublished { get; set; }
