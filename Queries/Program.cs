@@ -12,73 +12,83 @@ namespace Queries
         {
             var context = new PlutoContext();
 
-            var query =
-                from c in context.Courses
-                where c.Level == 1 && c.AuthorId == 1
-                select c;
+            // Filter
+            //var courses = context.Courses.Where(c => c.Level == 1);
 
             // Ordering
-            var ordering =
-                from c in context.Courses
-                where c.AuthorId == 1
-                orderby c.Level descending, c.Name
-                select c;
+            var ordering = context.Courses
+                .Where(c => c.Level == 1)
+                .OrderByDescending(c => c.Name)
+                .ThenByDescending(c => c.Level);
 
             // Projection
-            var projection =
-                from c in context.Courses
-                where c.AuthorId == 1
-                orderby c.Level descending, c.Name
-                select new { Name = c.Name, Author = c.Author.Name };
+            var projection = context.Courses
+                .Where(c => c.Level == 1)
+                .OrderByDescending(c => c.Name)
+                .ThenByDescending(c => c.Level)
+                .Select(c => new {CourseName = c.Name, AuthorName = c.Author.Name});
+
+            // Projecting to non anonymous object
+            var tags = context.Courses
+                .Where(c => c.Level == 1)
+                .OrderByDescending(c => c.Name)
+                .ThenByDescending(c => c.Level)
+                //.Select(c => c.Tags); 
+                .SelectMany(c => c.Tags); // For flat list of Tags
+
+            //foreach (var c in courses) // Nested Tags
+            //{
+            //    foreach (var tag in c)
+            //    {
+            //        Console.WriteLine(tag.Name);
+            //    }
+            //}
+
+            foreach (var t in tags)
+            {
+                Console.WriteLine(t.Name);
+            }
+
+            // Distinct
+            var distinct = context.Courses
+                .Where(c => c.Level == 1)
+                .OrderByDescending(c => c.Name)
+                .ThenByDescending(c => c.Level)
+                .SelectMany(c => c.Tags)
+                .Distinct();
 
             // Grouping
-            var grouping =
-                from c in context.Courses
-                group c by c.Level
-                into g
-                select g;
+            var groups = context.Courses.GroupBy(c => c.Level);
 
-            foreach (var group in grouping)
+            foreach (var group in groups)
             {
-                //Console.WriteLine(group.Key);
-                //foreach (var course in group)
-                //{
-                //    Console.WriteLine("\t{0}", course.Name);
-                //}
+                Console.WriteLine("Key: " + group.Key);
 
-                Console.WriteLine("{0} ({1})", group.Key, group.Count()); // Aggregate function count in Groups
+                foreach (var course in group)
+                    Console.WriteLine("\t" + course.Name);
             }
 
             // Joining
-            // using Navigation Property to join in LINQ instead of using Inner Join
-            var navigationProperty =
-                from c in context.Courses
-                select new { CourseName = c.Name, AuthorName = c.Author.Name };
+            var innerJoin = context.Courses.Join(context.Authors, 
+                c => c.AuthorId, 
+                a => a.Id, 
+                (course, author) => new
+                    {
+                        CourseName = course.Name,
+                        AuthorName = author.Name
+                    });
 
-            // Inner Join w/o Navigation Property
-            var innerJoinWithoutNavigationProperty =
-                from c in context.Courses
-                join a in context.Authors on c.AuthorId equals a.Id
-                select new { Course = c.Name, AuthorName = a.Name };
-
-            // Group Join
-            var groupJoin =
-                from a in context.Authors
-                join c in context.Courses on a.Id equals c.AuthorId into g
-                select new {AuthorName = a.Name, Courses = g.Count()};
-            foreach (var x in groupJoin)
-                Console.WriteLine("{0} ({1})", x.AuthorName, x.Courses);
-
-            // Cross Join
-            var crossJoin =
-                from a in context.Authors
-                from c in context.Courses
-                select new {AuthorName = a.Name, CourseName = c.Name};
-
-            foreach (var x in crossJoin)
+            var groupJoin = context.Authors.GroupJoin(context.Courses, a => a.Id, c => c.Id, (author, courses) => new
             {
-                Console.WriteLine("{0} ({1})", x.AuthorName, x.CourseName);
-            }
+                AuthorName = author,
+                Courses = courses.Count()
+            });
+
+            var crossJoin = context.Authors.SelectMany(a => context.Courses, (author, course) => new
+            {
+                AuthorName = author.Name,
+                CourseName = course.Name
+            });
         }
     }
 }
