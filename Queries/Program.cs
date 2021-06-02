@@ -10,19 +10,18 @@ namespace Queries
     {
         static void Main(string[] args)
         {
-            var context = new PlutoContext();
-
-            //var courses = context.Courses;
+            //var context = new PlutoContext();
+            //IQueryable<Course> courses = context.Courses;
             //var filtered = courses.Where(c => c.Level == 1);
-            //var sorted = filtered.OrderBy(c => c.Name);
+            //foreach (var course in filtered)
+            //    Console.WriteLine(course.Name); 
 
-            //var courses = context.Courses.Where(c => c.Level == 1).OrderBy(c => c.Name);
-            //var courses = context.Courses.Where(c => c.IsBegginerCourse == true); // Unhandled Exception
+            //IEnumerable<Course> x;
+            //x.Where() // expects a Func
 
-            var courses = context.Courses.ToList().Where(c => c.IsBegginerCourse == true);
+            IQueryable<Course> x;
+            x.Where(c => c.Level == 1).OrderBy(c => c.Name);
 
-            foreach (var c in courses)
-                Console.WriteLine(c.Name);
         }
     }
 }
