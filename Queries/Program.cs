@@ -12,24 +12,17 @@ namespace Queries
         {
             var context = new PlutoContext();
 
-            // Partitioning
-            var courses = context.Courses.Skip(10).Take(10);
+            //var courses = context.Courses;
+            //var filtered = courses.Where(c => c.Level == 1);
+            //var sorted = filtered.OrderBy(c => c.Name);
 
-            // Element Operators
-            context.Courses.OrderBy(c => c.Level).FirstOrDefault(c => c.FullPrice > 100);
+            //var courses = context.Courses.Where(c => c.Level == 1).OrderBy(c => c.Name);
+            //var courses = context.Courses.Where(c => c.IsBegginerCourse == true); // Unhandled Exception
 
-            context.Courses.Last();
-            context.Courses.SingleOrDefault(c => c.Id == 1);
+            var courses = context.Courses.ToList().Where(c => c.IsBegginerCourse == true);
 
-            // Quantifying
-            var allAbove10Dollars = context.Courses.All(c => c.FullPrice > 10);
-            context.Courses.Any(c => c.Level == 1);
-
-            // Aggregate
-            var count = context.Courses.Where(c => c.Level == 1).Count();
-            context.Courses.Max(c => c.FullPrice);
-            context.Courses.Min(c => c.FullPrice);
-            context.Courses.Average(c => c.FullPrice);
+            foreach (var c in courses)
+                Console.WriteLine(c.Name);
         }
     }
 }
