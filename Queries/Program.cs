@@ -12,83 +12,24 @@ namespace Queries
         {
             var context = new PlutoContext();
 
-            // Filter
-            //var courses = context.Courses.Where(c => c.Level == 1);
+            // Partitioning
+            var courses = context.Courses.Skip(10).Take(10);
 
-            // Ordering
-            var ordering = context.Courses
-                .Where(c => c.Level == 1)
-                .OrderByDescending(c => c.Name)
-                .ThenByDescending(c => c.Level);
+            // Element Operators
+            context.Courses.OrderBy(c => c.Level).FirstOrDefault(c => c.FullPrice > 100);
 
-            // Projection
-            var projection = context.Courses
-                .Where(c => c.Level == 1)
-                .OrderByDescending(c => c.Name)
-                .ThenByDescending(c => c.Level)
-                .Select(c => new {CourseName = c.Name, AuthorName = c.Author.Name});
+            context.Courses.Last();
+            context.Courses.SingleOrDefault(c => c.Id == 1);
 
-            // Projecting to non anonymous object
-            var tags = context.Courses
-                .Where(c => c.Level == 1)
-                .OrderByDescending(c => c.Name)
-                .ThenByDescending(c => c.Level)
-                //.Select(c => c.Tags); 
-                .SelectMany(c => c.Tags); // For flat list of Tags
+            // Quantifying
+            var allAbove10Dollars = context.Courses.All(c => c.FullPrice > 10);
+            context.Courses.Any(c => c.Level == 1);
 
-            //foreach (var c in courses) // Nested Tags
-            //{
-            //    foreach (var tag in c)
-            //    {
-            //        Console.WriteLine(tag.Name);
-            //    }
-            //}
-
-            foreach (var t in tags)
-            {
-                Console.WriteLine(t.Name);
-            }
-
-            // Distinct
-            var distinct = context.Courses
-                .Where(c => c.Level == 1)
-                .OrderByDescending(c => c.Name)
-                .ThenByDescending(c => c.Level)
-                .SelectMany(c => c.Tags)
-                .Distinct();
-
-            // Grouping
-            var groups = context.Courses.GroupBy(c => c.Level);
-
-            foreach (var group in groups)
-            {
-                Console.WriteLine("Key: " + group.Key);
-
-                foreach (var course in group)
-                    Console.WriteLine("\t" + course.Name);
-            }
-
-            // Joining
-            var innerJoin = context.Courses.Join(context.Authors, 
-                c => c.AuthorId, 
-                a => a.Id, 
-                (course, author) => new
-                    {
-                        CourseName = course.Name,
-                        AuthorName = author.Name
-                    });
-
-            var groupJoin = context.Authors.GroupJoin(context.Courses, a => a.Id, c => c.Id, (author, courses) => new
-            {
-                AuthorName = author,
-                Courses = courses.Count()
-            });
-
-            var crossJoin = context.Authors.SelectMany(a => context.Courses, (author, course) => new
-            {
-                AuthorName = author.Name,
-                CourseName = course.Name
-            });
+            // Aggregate
+            var count = context.Courses.Where(c => c.Level == 1).Count();
+            context.Courses.Max(c => c.FullPrice);
+            context.Courses.Min(c => c.FullPrice);
+            context.Courses.Average(c => c.FullPrice);
         }
     }
 }
