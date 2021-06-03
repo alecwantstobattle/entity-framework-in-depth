@@ -11,25 +11,30 @@ namespace Queries
     {
         static void Main(string[] args)
         {
-            var context = new PlutoContext();
-
-            //var author = context.Authors.Include(c => c.Courses).Single(a => a.Id == 1);
+            //var author = new Author() {Id = 1, Name = "Mosh Hamedani"};
             
+            var context = new PlutoContext();
+            //context.Authors.Attach(author);
+
+            //var authors = context.Authors.ToList();
+
             //var author = context.Authors.Single(a => a.Id == 1);
 
-            //// MSDN way
-            //context.Entry(author).Collection(a => a.Courses).Query().Where(c => c.FullPrice == 0).Load();
+            var course = new Course
+            {
+                Name = "New Course",
+                Description = "New Description",
+                FullPrice = 19.95f,
+                Level = 1,
+                // Author = new Author { Id = 1, Name = "Mosh Hamedani" }
+                // Author = author
+                AuthorId = 1
+                // Author = author
+            };
 
-            //// Mosh way
-            //context.Courses.Where(c => c.AuthorId == author.Id && c.FullPrice == 0).Load();
+            context.Courses.Add(course);
 
-            //foreach (var course in author.Courses)
-            //    Console.WriteLine("{0} by {1}", course.Name, course.Author.Name);
-
-            var authors = context.Authors.ToList();
-            var authorIds = authors.Select(a => a.Id);
-
-            context.Courses.Where(c => authorIds.Contains(c.AuthorId) && c.FullPrice == 0);
+            context.SaveChanges();
         }
     }
 }
