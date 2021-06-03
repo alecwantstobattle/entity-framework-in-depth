@@ -13,9 +13,14 @@ namespace Queries
         {
             var context = new PlutoContext();
 
-            var course = context.Courses.Find(4); // Single(c => c.Id == 4)
-            course.Name = "New Name";
-            course.AuthorId = 2;
+            //var course = context.Courses.Find(6);
+            //context.Courses.Remove(course);
+
+            // Cascade Delete Off
+
+            var author = context.Authors.Include(a => a.Courses).Single(a => a.Id == 2);
+            context.Courses.RemoveRange(author.Courses); 
+            context.Authors.Remove(author);
 
             context.SaveChanges();
         }
