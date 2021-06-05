@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Queries.Persistence;
 
 namespace Queries
 {
@@ -11,25 +12,19 @@ namespace Queries
     {
         static void Main(string[] args)
         {
-            var context = new PlutoContext();
-
-            // Add an object
-            context.Authors.Add(new Author {Name = "New Author"});
-
-            // Update an object
-            var author = context.Authors.Find(3);
-            author.Name = "Updated";
-
-            // Remove an object
-            var another = context.Authors.Find(4);
-            context.Authors.Remove(another);
-
-            var entries = context.ChangeTracker.Entries();
-
-            foreach (var entry in entries)
+            using (var unitOfWork = new UnitOfWork(new PlutoContext()))
             {
-                entry.Reload();
-                Console.WriteLine(entry.State);
+                // Example1
+                var course = unitOfWork.Courses.Get(1);
+
+                // Example2
+                var courses = unitOfWork.Courses.GetCoursesWithAuthors(1, 4);
+
+                // Example3
+                var author = unitOfWork.Authors.GetAuthorWithCourses(1);
+                unitOfWork.Courses.RemoveRange(author.Courses);
+                unitOfWork.Authors.Remove(author);
+                unitOfWork.Complete();
             }
         }
     }

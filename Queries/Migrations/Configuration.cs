@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Queries.Core.Domain;
+using Queries.Persistence;
 
 namespace Queries.Migrations
 {
@@ -8,14 +10,14 @@ namespace Queries.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Queries.PlutoContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<PlutoContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Queries.PlutoContext context)
+        protected override void Seed(PlutoContext context)
         {
             #region Add Tags
             var tags = new Dictionary<string, Tag>
